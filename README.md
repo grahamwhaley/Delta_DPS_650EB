@@ -108,8 +108,8 @@ The below table tries to represent what I've found so far, which is not much:
 | T17 | .. |
 | T18 | +5sb ??? (shorting to GND resets PSU) |
 | T19 | |
-| T20 | |
-| T21 | |
+| T20 [short pin] | |
+| T21 | Possibly fan control. 330ohm to T20 slows fan down, even when 12V not powered up |
 | T22 | |
 | T23 | |
 | T24 | |
