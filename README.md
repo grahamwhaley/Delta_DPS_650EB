@@ -16,17 +16,29 @@ Research Machines 'RM Dualserv', which is so old, and tbh, large and loud, it is
 to anybody. However, each of those PSUs can kick out a healthy 54A of 12v each, and that might be
 of use to me.
 
-I did some digging and tried to see if I could get the units to power up outside of the server.
-Bottom line answer so far is **no**. I can however run them in the 'PSU chassis' that comes out of
-the server, which might be a useful interim solution.
+## **Update** How to power up!
 
-I'll document what I know here just in case it saves somebody else some time. If you know or find
-out how to get these to power up on their own, drop a note here or email me and I'll update the
-info.
+I now know how to power these up! I didn't discover the details - I found somebody on eevblog
+who appeared to have powered one up, and they kindly shared the details. You can find that
+thread [here](https://www.eevblog.com/forum/projects/hp-hstns-pl11-over-voltage-protection-voltage-increase/msg3549625/#msg3549625).
+
+Bottom line, connect pins T21 (PSKILL?) and T20 (#PSON) to GND. I used 1kohm resistors to do this,
+but in the original they were just direct shorts. If you are going to use one of these signals as
+an on/off switch then use T20/#PSON.
+
+Note, after a few seconds the fan spins up fairly fast, and does not decrease, even with no load
+attached. These are probalby not the quietest PSUs out there.
+
+Originally I did some digging and tried to see if I could get the units to power up outside of
+the server.  Bottom line answer was **no**. During my 'probing around' (where I had really passed
+the point of caring) I think I damaged one of my units, as now even with the above two pins
+connected it clicks and goes into an 'orange LED' error mode.
+
+I'll document what I know here just in case it saves somebody else some time.
 
 ## Overview
 
-The RM Dualserv comes with dual redundant PSUs. They are quite compact, heavy, Delta switch mode
+The RM Dualserv comes with dual redundant PSUs. They are moderately compact, heavy, Delta switch mode
 PSUs, each capable of delivering 12v at 54A as their main output. They are rated for 655W or
 thereabouts.
 
@@ -70,16 +82,6 @@ regulators in it. It also must contain the power on circuitry.
 I put one of the 650EBs into the frame, and wired the green 'power on' line on the main ATX connector
 to ground, and voila, out came 12v.
 
-It's not clear to me if there is a more complex power up sequence required. Thoughts remaining are:
-
-- Maybe the units need singalling over SMbus or similar - that would be a bit annoying, and unlike
-  all other supplies I've read about being hacked.
-- Maybe the 12v sense lines need to be wired up before the unit will boot - I don't think that is common
-  on other supplies either is it?
-- There may be more than one line that needs pulling high/low. Following the procedure on the RCgroups
-  page linked earlier, where you test out all the lines and then wire 1kohm resistors across all the
-  'worthy' ones and see if it powers up is probably worth a shot.
-
 ## Pinout
 
 The 'pins' compose of edge connector pads on both sides. They are labelled partly on the PCB as
@@ -91,25 +93,25 @@ The below table tries to represent what I've found so far, which is not much:
 | Pin | Function |
 | --- | -------- |
 | T1  | +12v |
-| T2  | .. |
-| T3  | .. |
-| T4  | .. |
-| T5  | .. |
-| T6  | .. |
-| T7  | .. |
-| T8  | .. |
+| T2  | +12v |
+| T3  | +12v |
+| T4  | +12v |
+| T5  | +12v |
+| T6  | +12v |
+| T7  | +12v |
+| T8  | +12v |
 | T9  | GND |
-| T11 | .. |
-| T12 | .. |
-| T13 | .. |
-| T14 | .. |
-| T15 | .. |
-| T16 | .. |
-| T17 | .. |
+| T11 | GND |
+| T12 | GND |
+| T13 | GND |
+| T14 | GND |
+| T15 | GND |
+| T16 | GND |
+| T17 | GND |
 | T18 | +5sb ??? (shorting to GND resets PSU) |
 | T19 | |
-| T20 [short pin] | |
-| T21 | Possibly fan control. 330ohm to T20 slows fan down, even when 12V not powered up |
+| T20 [short pin] | #PSON ? |
+| T21 | PSKILL ?. Possibly fan control. 330ohm to T20 slows fan down, even when 12V not powered up |
 | T22 | |
 | T23 | |
 | T24 | |
@@ -121,23 +123,23 @@ The below table tries to represent what I've found so far, which is not much:
 | B31 | |
 | B32 | |
 | B33 | GND |
-| B34 | .. |
-| B35 | .. |
-| B36 | .. |
-| B37 | .. |
-| B38 | .. |
-| B39 | .. |
-| B40 | .. |
-| B41 | .. |
+| B34 | GND |
+| B35 | GND |
+| B36 | GND |
+| B37 | GND |
+| B38 | GND |
+| B39 | GND |
+| B40 | GND |
+| B41 | GND |
 | B42 | +12v |
-| B43 | .. |
-| B44 | .. |
-| B45 | .. |
-| B46 | .. |
-| B47 | .. |
-| B48 | .. |
-| B49 | .. |
-| B50 | .. |
+| B43 | +12v |
+| B44 | +12v |
+| B45 | +12v |
+| B46 | +12v |
+| B47 | +12v |
+| B48 | +12v |
+| B49 | +12v |
+| B50 | +12v |
 
 Note, as far as I can see there are *no* 'No Connection' (NC) pins on the header - here are some closeup
 pictures:
@@ -151,8 +153,6 @@ pictures:
 These are *loud*. Even with no load, when powered up in the RPS-650, a single unit ran its fan up
 to full speed, or so it seemed. Too loud for me to have living in my den/office. Maybe if I find a
 need for a big PSU far far away (in the garage for instance), it might be workable.
-
-For now the 650EBs and the RPS-650 are consigned to the 'may be useful in the future' pile.
 
 If you do manage to get one of these powered up, inside you will find a couple of small potentiometers
 that will probably allow you to alter the output voltage, if you need more than 12v. One of the
